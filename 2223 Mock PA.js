@@ -149,7 +149,24 @@ function add_poly(poly1, poly2) {
 
 //Question 7 of 8
 
+function multiply_calculator(pair1, pair2) {                //the calculator which calculate single term * single term
+    const coeff1 = head(pair1);
+    const power1 = tail(pair1);
+    const coeff2 = head(pair2);
+    const power2 = tail(pair2);
+    return pair(coeff1 * coeff2, power1 + power2);
+}
 
+function multiply_poly(poly1, poly2) {
+    return is_null(poly1)
+           ? null
+           : add_poly(put_poly1_to_poly2_equation(head(poly1), poly2),
+             multiply_poly(tail(poly1), poly2));
+}
+
+function put_poly1_to_poly2_equation(single_poly1, poly2) {
+    return map(x => multiply_calculator(single_poly1, x), poly2);
+}
 
 //Question 8 of 8
 //When doing matrix question, it is better to draw out a matrix (table) with i/x by the sides/top
