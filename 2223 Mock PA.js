@@ -53,7 +53,7 @@ function solve(n, constraints) {
                ? true
                : char_at(word, head(head(constraints))) === tail(head(constraints))
                ? constraints_condition(word, tail(constraints))
-               :false
+               : false;
     }
     return filter(x => constraints_condition(x, constraints), pa_length_filtered);
 }
