@@ -7,7 +7,7 @@ function is_pa_word(s) {
     return !is_null(member(s, pa_words));
 }
 
-or 
+//or my answer
 
 //my answer
 function is_pa_word(s) {
