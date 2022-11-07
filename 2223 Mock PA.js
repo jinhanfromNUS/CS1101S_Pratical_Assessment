@@ -161,6 +161,15 @@ function put_poly1_to_poly2_equation(single_poly1, poly2) {             //map a 
     return map(x => multiply_calculator(single_poly1, x), poly2);       //if you intend to apply a function to a list, use map
 }
 
+//or my answer
+
+function put_poly1_to_poly2_equation(single_poly1, poly2) {
+    return is_null(poly2)
+          ? null
+          : pair(multiply_calculator(single_poly1, head(poly2)),
+             put_poly1_to_poly2_equation(single_poly1, tail(poly2)));
+}
+
 function multiply_poly(poly1, poly2) {
     return is_null(poly1)
            ? null
