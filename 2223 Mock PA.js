@@ -157,15 +157,15 @@ function multiply_calculator(pair1, pair2) {                //the calculator whi
     return pair(coeff1 * coeff2, power1 + power2);
 }
 
+function put_poly1_to_poly2_equation(single_poly1, poly2) {
+    return map(x => multiply_calculator(single_poly1, x), poly2);
+}
+
 function multiply_poly(poly1, poly2) {
     return is_null(poly1)
            ? null
            : add_poly(put_poly1_to_poly2_equation(head(poly1), poly2),
              multiply_poly(tail(poly1), poly2));
-}
-
-function put_poly1_to_poly2_equation(single_poly1, poly2) {
-    return map(x => multiply_calculator(single_poly1, x), poly2);
 }
 
 //Question 8 of 8
