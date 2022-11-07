@@ -149,7 +149,7 @@ function add_poly(poly1, poly2) {
 
 //Question 7 of 8
 
-function multiply_calculator(pair1, pair2) {                //the calculator which calculate single term * single term
+function multiply_calculator(pair1, pair2) {                    //the calculator which calculate single term * single term
     const coeff1 = head(pair1);
     const power1 = tail(pair1);
     const coeff2 = head(pair2);
@@ -157,8 +157,8 @@ function multiply_calculator(pair1, pair2) {                //the calculator whi
     return pair(coeff1 * coeff2, power1 + power2);
 }
 
-function put_poly1_to_poly2_equation(single_poly1, poly2) {
-    return map(x => multiply_calculator(single_poly1, x), poly2);
+function put_poly1_to_poly2_equation(single_poly1, poly2) {             //map a function to every term of poly 2 (the function is single_poly1 * x)
+    return map(x => multiply_calculator(single_poly1, x), poly2);       //if you intend to apply a function to a list, use map
 }
 
 function multiply_poly(poly1, poly2) {
