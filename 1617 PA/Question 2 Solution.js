@@ -10,14 +10,20 @@
 // Question 2A
 ////////////////////////////////////////////////////////////
 
-function all_different(nums) {
+// function all_different(nums) {
 
-    return is_null(tail(nums))
-           ? true
-           : is_null(member(head(nums), tail(nums))) && all_different(tail(nums));
+//     return is_null(tail(nums))
+//           ? true
+//           : is_null(member(head(nums), tail(nums))) && all_different(tail(nums));
            
-}
+// }
 
+function all_different(nums) {
+    function different(num, nums) {
+        return is_null(member(num, nums));
+    }
+    return accumulate((x, y) => different(x, nums) && y, true, nums); 
+}
 
 
 ////////////////////////////////////////////////////////////
@@ -68,17 +74,17 @@ function num_of_matches(numsA, numsB) {
 
 //or my answer (more general)
 
-function num_of_matches(numsA, numsB) {                                 //function num_of_matches(numsA, numsB) {  
-    function compare_one_to_B(one, list) {                                  //return is_null(line1)
-        return accumulate((x, y) => compare(one, x) + y, 0, list);                 //? 0
-    }                                                                              //: compare_one_to_list(head(line1), line2) + recursing_a_equation(tail(line1), line2);
-    function compare(valueA, valueB) {                                  //}
-        return valueA === valueB
-               ? 1
-               : 0;
-    }
-    return accumulate((x, y) => compare_one_to_B(x, numsB) + y, 0, numsA);
-}
+// function num_of_matches(numsA, numsB) {                                 //function num_of_matches(numsA, numsB) {  
+//     function compare_one_to_B(one, list) {                                  //return is_null(line1)
+//         return accumulate((x, y) => compare(one, x) + y, 0, list);                 //? 0
+//     }                                                                              //: compare_one_to_list(head(line1), line2) + recursing_a_equation(tail(line1), line2);
+//     function compare(valueA, valueB) {                                  //}
+//         return valueA === valueB
+//               ? 1
+//               : 0;
+//     }
+//     return accumulate((x, y) => compare_one_to_B(x, numsB) + y, 0, numsA);
+// }
 
 
 
