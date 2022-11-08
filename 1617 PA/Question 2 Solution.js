@@ -10,19 +10,20 @@
 // Question 2A
 ////////////////////////////////////////////////////////////
 
-// function all_different(nums) {
+function all_different(nums) {
 
-//     return is_null(tail(nums))
-//           ? true
-//           : is_null(member(head(nums), tail(nums))) && all_different(tail(nums));
+    return is_null(tail(nums))
+          ? true
+          : is_null(member(head(nums), tail(nums))) && all_different(tail(nums));
            
-// }
+}
+
+//or alternative answer
 
 function all_different(nums) {
-    function different(num, nums) {
-        return is_null(member(num, nums));
-    }
-    return accumulate((x, y) => different(x, nums) && y, true, nums); 
+
+    return accumulate((x, y) => is_null(member(x, remove(x,nums))) && y, true, nums);
+    
 }
 
 
