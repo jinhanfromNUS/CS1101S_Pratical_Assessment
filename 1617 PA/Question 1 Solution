@@ -1,0 +1,674 @@
+// Instructions for students who are using this for practice:
+//
+// (1) Copy and paste this entire file into the editor of Source Academy
+//     Playground at https://sourceacademy.nus.edu.sg/playground
+// (2) Write your solution for each task in the Source Academy Playground.
+// (3) Run the program to test your solution on the given testcases.
+
+
+////////////////////////////////////////////////////////////
+// Question 1A
+////////////////////////////////////////////////////////////
+
+function is_nucleobase(s) {
+
+    return (s === "A" || s === "C" || s === "G" || s === "T");
+
+}
+
+
+
+////////////////////////////////////////////////////////////
+// Question 1B
+////////////////////////////////////////////////////////////
+
+function is_dna_strand(xs) {
+
+    return accumulate((x, y) => is_nucleobase(x) && y, true, xs);
+
+}
+
+
+
+////////////////////////////////////////////////////////////
+// Question 1C
+////////////////////////////////////////////////////////////
+
+function combine(xss) {
+
+    return accumulate((x, y) => append(x, y), null, xss);
+
+}
+
+
+
+////////////////////////////////////////////////////////////
+// Question 1D
+////////////////////////////////////////////////////////////
+
+function oxoguanine_repair(xs) {
+
+    return is_null(xs)
+           ? null
+           : head(xs) === "8"
+           ? pair("G", oxoguanine_repair(tail(xs)))
+           : pair(head(xs), oxoguanine_repair(tail(xs)));
+
+}
+
+
+////////////////////////////////////////////////////////////
+// Question 1E
+////////////////////////////////////////////////////////////
+
+function find_gene_start(xs) {
+    
+    const len = length(xs);
+    
+    if (len >= 3) {
+        const first = head(xs);
+        const second = head(tail(xs));
+        const third = head(tail(tail(xs)));
+        if (first === "A" && second === "T" && third === "G") {     //if the first three characters condition is met
+            return list(tail(tail(tail(xs))));                      //return the result
+        } else {
+            return find_gene_start(tail(xs));                       //if the first three characters condition is met, do recursion
+        }
+    } else {                            //when the list is recursed length is lesser than 3
+        return null;
+    }
+    
+}
+
+
+
+////////////////////////////////////////////////////////////
+// Question 1F
+////////////////////////////////////////////////////////////
+
+function find_gene_end(xs) {
+    // WRITE HERE.
+    function at_least_length(ys, n) {
+        if (n === 0) {
+            return true;
+        } else if (is_null(ys)) {
+            return false;
+        } else {
+            return at_least_length(tail(ys), n - 1);
+        }
+    }
+    function is_prefix(ys, zs) {
+        if (is_null(ys)) {
+            return true;
+        } else if (is_null(zs)) {
+            return false;
+        } else if (head(ys) === head(zs)) {
+            return is_prefix(tail(ys), tail(zs));
+        } else {
+            return false;
+        }
+    }
+    function find_end(ws, acc) {
+        if (at_least_length(ws, 3)) {
+            if (is_prefix(list("T", "A", "G"), ws) ||
+                is_prefix(list("T", "A", "A"), ws) ||
+                is_prefix(list("T", "G", "A"), ws)) {
+                return list(reverse(acc));
+            } else {
+                return find_end(tail(ws), pair(head(ws), acc));
+            }
+        } else {
+             return null;
+        }
+    }
+    return find_end(xs, null);
+}
+
+/*
+do not know why this does not work
+function find_gene_end(xs) {
+    
+    function is_stop_codons(n, list_of_gene) {
+        if (list_ref(n, list) === "T" && list_ref(n+1, list) === "A" && list_ref(n+2, list) === "G"
+            || list_ref(n, list) === "T" && list_ref(n+1, list) === "A" && list_ref(n+2, list) === "A"
+            || list_ref(n, list) === "T" && list_ref(n+1, list) === "G" && list_ref(n+2, list) === "A") {
+                return true;
+            } else {
+                return false;
+            }
+    }
+    
+    function take(x, list) {
+        return x === 0
+               ? null
+               : pair(head(list), take(x-1, tail(list)));
+    }
+    
+    function where_is_stop_codons(n, list_of_gene) {
+        if (n+2 < length(list)) {
+            if (is_stop_codons(n, list_of_gene)) {
+                return list(take(n-1, list_of_gene));
+            } else { 
+                return where_is_stop_codons(n+1, list_of_gene);
+            }
+        } else {
+            return null;
+        }
+    }
+    
+    if(is_stop_codons(0, xs)) {
+        return list(null);
+    } else {
+        return where_is_stop_codons(1, xs);
+    }
+}
+
+// idea:
+// list_ref(position, list)
+// if list_ref(position, list) = T && list_ref(position+1, list) = A && list_ref(position + 2, list), list(position + 3, list)
+//     || other stop codons
+
+// recursion 
+// function where_is_stop_codons(n, list) { //helper
+//     if conditions
+//         return index number
+//     else where_is_stop_codons(n+1, list)    
+// }
+
+// return function where_is_stop_codons(1, list) //starts from 1 because index 0 condition is being considered functionally-externally 
+
+         
+// if the first three is stop codon, then return list(null);
+
+// if the list does not contain stop codons, return null
+
+*/
+
+
+////////////////////////////////////////////////////////////
+// Question 1G
+////////////////////////////////////////////////////////////
+
+function all_genes(xs) {
+    const start = find_gene_start(xs);
+    if (is_null(start)) {
+        return null;
+    } else {
+        const end = find_gene_end(head(start));
+        if (is_null(end)) {
+            return null;
+        } else {
+            return pair(head(end), all_genes(head(start)));
+        }
+    }
+}
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+
+//===========================================================
+// This function is provided for running the testcases
+// in the Source Academy Playground.
+// They are NOT part of the actual testing facility provided
+// in the actual Practical Assessment.
+//===========================================================
+function assert(f, test_name, fnames) {
+    display(test_name + ": " + (f() ? "PASS" : "FAIL"));
+}
+//===========================================================
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1A
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(is_nucleobase("Mary"), false);
+    },
+    "Q1A-P01",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("T"), true);
+    },
+    "Q1A-P02",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("^^^"), false);
+    },
+    "Q1A-P03",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("Mary"), false);
+    },
+    "Q1A-T01",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("G"), true);
+    },
+    "Q1A-T02",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("A"), true);
+    },
+    "Q1A-T03",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("TAG"), false);
+    },
+    "Q1A-T04",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_nucleobase("C"), true);
+    },
+    "Q1A-T05",
+    ['is_nucleobase']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1B
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("A", "G", "A")), true);
+    },
+    "Q1B-P01",
+    ['is_dna_strand']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("A", "B", "B", "A")), false);
+    },
+    "Q1B-P02",
+    ['is_dna_strand']
+);
+
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("T", "G", "C")), true);
+    },
+    "Q1B-P03",
+    ['is_dna_strand']
+);
+
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("T", "G", "Otto")), false);
+    },
+    "Q1B-P04",
+    ['is_dna_strand']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("T", "G", "C", "B")), false);
+    },
+    "Q1B-T01",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(null), true);
+    },
+    "Q1B-T02",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("A", "A", "A")), true);
+    },
+    "Q1B-T03",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("_", "A", "T")), false);
+    },
+    "Q1B-T04",
+    ['is_nucleobase']
+);
+
+assert(
+    () => {
+        return equal(is_dna_strand(list("T", "G", "C", "TT")), false);
+    },
+    "Q1B-T05",
+    ['is_nucleobase']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1C
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(combine(list(list("A", "G", "A", "T", "A"),
+                                  list("A"),
+                                  list("G", "A", "G"))),
+                    list("A", "G", "A", "T", "A", "A", "G", "A", "G"));
+    },
+    "Q1C-P01",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(list(list("G"),
+                                  list("G"),
+                                  list("C", "T", "C", "T"),
+                                  list("A"))),
+                     list("G", "G", "C", "T", "C", "T", "A"));
+    },
+    "Q1C-P02",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(list(list("A", "A", "A"),
+                                  list("G"),
+                                  list("C", "G", "C", "T"),
+                                  list("A", "C"))),
+                     list("A", "A", "A", "G", "C", "G", "C", "T", "A", "C"));
+    },
+    "Q1C-T01",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(null),
+                     null);
+    },
+    "Q1C-T02",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(list(null)),
+                     null);
+    },
+    "Q1C-T03",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(list(list("A"))),
+                     list("A"));
+    },
+    "Q1C-T04",
+    ['combine']
+);
+
+assert(
+    () => {
+        return equal(combine(list(null, null, list("T"))),
+                     list("T"));
+    },
+    "Q1C-T05",
+    ['combine']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1D
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(list("A", "8", "A", "8", "C", "T", "A", "C")),
+                     list("A", "G", "A", "G", "C", "T", "A", "C"));
+    },
+    "Q1D-P01",
+    ['oxoguanine_repair']
+);
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(list("8", "8", "8", "8", "8")),
+                     list("G", "G", "G", "G", "G"));
+    },
+    "Q1D-T01",
+    ['oxoguanine_repair']
+);
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(list("A", "A", "A", "A")),
+                     list("A", "A", "A", "A"));
+    },
+    "Q1D-T02",
+    ['oxoguanine_repair']
+);
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(null),
+                     null);
+    },
+    "Q1D-T03",
+    ['oxoguanine_repair']
+);
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(list("A", "T", "G", "C", "8")),
+                     list("A", "T", "G", "C", "G"));
+    },
+    "Q1D-T04",
+    ['oxoguanine_repair']
+);
+
+assert(
+    () => {
+        return equal(oxoguanine_repair(list("8", "C")),
+                     list("G", "C"));
+    },
+    "Q1D-T05",
+    ['oxoguanine_repair']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1E
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "C", "A", "T", "G", "T", "A", "C")),
+                     list(list("T", "A", "C")));
+    },
+    "Q1E-P01",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "T", "A", "C", "G", "T", "A", "C")),
+                     null);
+    },
+    "Q1E-P02",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "T", "A", "G", "T", "A", "T", "G")),
+                     list(null));
+    },
+    "Q1E-P03",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(null),
+                     null);
+    },
+    "Q1E-T01",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "A", "A", "T", "G", "A", "T", "G")),
+                     list(list("A", "T", "G")));
+    },
+    "Q1E-T02",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "T", "G", "C", "G", "T", "A", "C")),
+                     list(list("C", "G", "T", "A", "C")));
+    },
+    "Q1E-T03",
+    ['find_gene_start']
+);
+
+assert(
+    () => {
+        return equal(find_gene_start(list("A", "T", "A", "T", "A", "T", "A", "T")),
+                     null);
+    },
+    "Q1E-T04",
+    ['find_gene_start']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1F
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(find_gene_end(list("A", "G", "A", "G", "T", "A", "A", "T", "A", "A")),
+                     list(list("A", "G", "A", "G")));
+    },
+    "Q1F-P01",
+    ['find_gene_end']
+);
+
+assert(
+    () => {
+        return equal(find_gene_end(list("A", "T", "A", "C", "C", "A", "G", "A", "T")),
+                     null);
+    },
+    "Q1F-P02",
+    ['find_gene_end']
+);
+
+assert(
+    () => {
+        return equal(find_gene_end(list("T", "G", "A", "A", "T", "A", "C")),
+                     list(null));
+    },
+    "Q1F-P03",
+    ['find_gene_end']
+);
+
+assert(
+    () => {
+        return equal(find_gene_end(list("G", "C", "T", "G", "A", "T", "A", "A")),
+                     list(list("G", "C")));
+    },
+    "Q1F-T01",
+    ['find_gene_end']
+);
+
+assert(
+    () => {
+        return equal(find_gene_end(list("T", "T", "A", "C", "A", "G", "A", "T")),
+                     null);
+    },
+    "Q1F-T02",
+    ['find_gene_end']
+);
+
+assert(
+    () => {
+        return equal(find_gene_end(list("T", "A", "A", "T", "G", "A", "C")),
+                     list(null));
+    },
+    "Q1F-T03",
+    ['find_gene_end']
+);
+
+
+
+////////////////////////////////////////////////////////////
+// Test Cases for Q1G
+////////////////////////////////////////////////////////////
+
+assert(
+    () => {
+        return equal(all_genes(list("C", "T", "A", "A", "G", "C")),
+                     null);
+    },
+    "Q1G-P01",
+    ['all_genes']
+);
+
+assert(
+    () => {
+        return equal(all_genes(list("A", "A", "T", "G", "A", "C", "T",
+                                    "A", "G", "G")),
+                     list(list("A", "C")));
+    },
+    "Q1G-P02",
+    ['all_genes']
+);
+
+assert(
+    () => {
+        return equal(all_genes(list("T", "A", "T", "G", "C", "A", "T",
+                                    "A", "A", "G", "T", "A", "G", "A",
+                                    "T", "G", "A", "T", "G", "A", "T")),
+                     list(list("C", "A"), list("A")));
+    },
+    "Q1G-P03",
+    ['all_genes']
+);
