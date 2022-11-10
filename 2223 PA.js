@@ -180,7 +180,50 @@ function make_NiFT(T) {
 
 }
 
+// TASK 3B
 
+function insert(x, xs) {
+    return is_null(xs)
+           ? list(x)
+           : x <= head(xs) 
+           ? pair(x, xs)
+           : pair(head(xs), insert(x, tail(xs)));
+}
+
+function insertion_sort(xs) {
+    return is_null(xs)
+           ? xs
+           : insert(head(xs), insertion_sort(tail(xs)));
+}
+
+function map_tree(fun, tree) {
+    return map(sub_tree =>
+                   !is_list(sub_tree)
+                   ? fun(sub_tree)
+                   : map_tree(fun, sub_tree),
+               tree);
+}
+
+function flatten_tree(T) {
+    return accumulate((x, ys) => is_list(x)
+                                 ? append(flatten_tree(x), ys)
+                                 : append(list(x), ys),
+                      null, T);
+}
+
+function make_SToN(T) {
+    let sorted_list = insertion_sort(flatten_tree(T));
+
+    function traverse_sorted_list(x) {
+        const h = head(sorted_list);
+        sorted_list = tail(sorted_list);
+        return h;
+    }
+
+    return map_tree(traverse_sorted_list, T);
+}
+
+//I am not familiar with tree sorting functions, e.g. flatten_tree/map_tree
 
 // TASK 4
 
