@@ -227,7 +227,35 @@ function make_SToN(T) {
 
 // TASK 4
 
-// You may write helper functions here.
+function shortest_path_length(maze, start_row, start_col) {
+    const nrows = array_length(maze);
+    const ncols = array_length(maze[0]);
+
+    function min_path_len(r, c) {
+        if (r < 0 || r >= nrows || c < 0 || c >= ncols) {
+            return Infinity;
+        } else if (maze[r][c] === "#") {
+            return Infinity;
+        } else if (maze[r][c] === "G") {
+            return 0;
+        } else {
+            const orig_cell_val = maze[r][c];
+            maze[r][c] = "#";
+
+            const east  = min_path_len(r, c + 1);
+            const north = min_path_len(r - 1, c);
+            const west  = min_path_len(r, c - 1);
+            const south = min_path_len(r + 1, c);
+
+            maze[r][c] = orig_cell_val;
+
+            return 1 + math_min(east, north, west, south);
+        }
+    }
+    return min_path_len(start_row, start_col);
+}
+
+//below solutions only works for public test case, AKA the normal maze
 let counter = 0;
 function shortest_path_length(maze, start_row, start_col) {
     const nrows = array_length(maze);
