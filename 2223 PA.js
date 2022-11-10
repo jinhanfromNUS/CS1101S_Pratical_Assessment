@@ -148,13 +148,20 @@ function subseq_replace(new_sub, old_sub, seq) {
 
 // TASK 3A
 
-function map_tree(f, tree) {
-return map(sub_tree =>
-!is_list(sub_tree)
-? f(sub_tree)
-: map_tree(f, sub_tree),
-tree);
+function make_NiFT(T) {
+    if (is_null(T)) {
+        return null;
+    } else if (!is_list(T)) {
+        return T;
+    } else {
+        const T2 = map(x => make_NiFT(x), T);
+        const list_of_nums = filter(x => !is_list(x), T2);
+        const list_of_lists = filter(x => is_list(x), T2);
+        return append(list_of_nums, list_of_lists);
+    }
 }
+
+//or
 
 function list_only(tree) {
     return filter(x => is_list(x), tree);
