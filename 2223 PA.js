@@ -30,6 +30,16 @@ function insert_subseq(L, pos, S) {
 
 // TASK 1B
 
+function remove_subseq(L, start_pos, end_pos) {
+    return end_pos === 0
+           ? tail(L)
+           : start_pos === 0
+           ? remove_subseq(tail(L), start_pos, end_pos - 1)
+           : pair(head(L), remove_subseq(tail(L), start_pos - 1, end_pos - 1));
+}
+
+//or my answer
+
 function take(n, xs) {
     return n === 0
            ? null
@@ -50,6 +60,17 @@ function remove_subseq(L, start_pos, end_pos) {
 }
 
 // TASK 2A
+
+function is_prefix_of(subseq, seq) {
+     return is_null(subseq)
+            ? true
+            : is_null(seq)
+            ? false
+            : head(subseq) === head(seq) &&
+              is_prefix_of(tail(subseq), tail(seq));
+}
+
+//or my answer
 
 function is_member(word, xs) {
     return !is_null(member(word, xs));
@@ -86,6 +107,19 @@ function tail_n_times(xs, n) {
            : tail_n_times(tail(xs), n - 1);
 }
 
+function subseq_replace(new_sub, old_sub, seq) {
+    if (is_null(seq)) {
+        return null;
+    } else if (!is_prefix_of(old_sub, seq)) {
+        return pair(head(seq), subseq_replace(new_sub, old_sub, tail(seq)));
+    } else {
+        const old_sub_len = length(old_sub);
+        return append(new_sub, subseq_replace(new_sub, old_sub,
+                                              tail_n_times(seq, old_sub_len)));
+    }
+}
+
+//or
       
 // ideas:
 
