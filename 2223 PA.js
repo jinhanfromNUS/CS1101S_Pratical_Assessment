@@ -2,6 +2,14 @@
 
 // TASK 1A
 
+function insert_subseq(L, pos, S) {
+    return pos === 0
+           ? append(S, L)
+           : pair(head(L), insert_subseq(tail(L), pos - 1, S));
+}
+
+//or my answer
+
 function take(n, xs) {
     return n === 0
            ? null
